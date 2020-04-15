@@ -9,6 +9,6 @@
   "author": "Eduard Castro",
   "license": "ISC",
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "gulp": "^3.9.1"
   }
 }

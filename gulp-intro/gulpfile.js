@@ -6,6 +6,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var pug = require('gulp-pug');
 var uglify = require('gulp-uglify');
+var plumber = require('gulp-plumber');
 
 gulp.task('hello', function () {
     console.log('Hello');
@@ -33,8 +34,9 @@ gulp.task('serve', ['sass', 'pug'], function () {
 
 gulp.task('sass', function () {
     return gulp.src('src/style.sass')
+        .pipe(plumber())
         .pipe(sourcemaps.init())
-        .pipe(sass().on('error', sass.logError))
+        .pipe(sass())
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
             cascade: false
@@ -46,13 +48,15 @@ gulp.task('sass', function () {
 
 gulp.task('pug', function () {
     return gulp.src('src/*.pug')
+        .pipe(plumber())
         .pipe(pug())
         .pipe(gulp.dest('.tmp'))
 })
 
 gulp.task('sass:prod', function () {
     return gulp.src('src/style.sass')
-        .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+        .pipe(plumber())
+        .pipe(sass({ outputStyle: 'compressed' })
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
             cascade: false
@@ -62,12 +66,14 @@ gulp.task('sass:prod', function () {
 
 gulp.task('pug:prod', function () {
     return gulp.src('src/*.pug')
+        .pipe(plumber())
         .pipe(pug())
         .pipe(gulp.dest('dist'))
 });
 
 gulp.task('js', function () {
     gulp.src('./src/app.js')
+        .pipe(plumber())
         .pipe(uglify({ compress: true }))
         .pipe(gulp.dest('dist'));
 });

@@ -7,6 +7,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var pug = require('gulp-pug');
 var uglify = require('gulp-uglify');
 var plumber = require('gulp-plumber');
+var ftp = require('vinyl-ftp');
 
 gulp.task('hello', function () {
     console.log('Hello');
@@ -57,11 +58,11 @@ gulp.task('sass:prod', function () {
     return gulp.src('src/style.sass')
         .pipe(plumber())
         .pipe(sass({ outputStyle: 'compressed' })
-        .pipe(autoprefixer({
-            browsers: ['last 2 versions'],
-            cascade: false
-        }))
-        .pipe(gulp.dest('dist'));
+            .pipe(autoprefixer({
+                browsers: ['last 2 versions'],
+                cascade: false
+            }))
+            .pipe(gulp.dest('dist'));
 });
 
 gulp.task('pug:prod', function () {
@@ -81,3 +82,22 @@ gulp.task('js', function () {
 gulp.task('default', ['hello', 'world', 'sass']);
 
 gulp.task('build', ['sass:prod', 'pug:prod', 'js']);
+
+function ftpConnection() {
+    return ftp.create({
+        host: 'acamica.com',
+        user: 'eduacagu',
+        password: process.env.FTP_PWD,
+        parallel: 5,
+        log: gutil.log
+    });
+}
+
+gulp.task('upload', ['build'], function () {
+    var ftp = ftpConnection();
+    var remoteFolder = '/_demo/acamica/demo-1-2/';
+
+    return gulp.src('dist/**', { base: 'dist', buffer: false })
+        .pipe(ftp.newer(remoteFolder))
+        .pipe(ftp.dest(remoteFolder));
+});

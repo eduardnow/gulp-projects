@@ -57,12 +57,12 @@ gulp.task('pug', function () {
 gulp.task('sass:prod', function () {
     return gulp.src('src/style.sass')
         .pipe(plumber())
-        .pipe(sass({ outputStyle: 'compressed' })
-            .pipe(autoprefixer({
-                browsers: ['last 2 versions'],
-                cascade: false
-            }))
-            .pipe(gulp.dest('dist'));
+        .pipe(sass({ outputStyle: 'compressed' }))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('pug:prod', function () {
